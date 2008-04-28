@@ -46,9 +46,6 @@ namespace Pipeline1
 	#endregion
 
 	#region PipeDataRow
-	/// <summary>
-	/// Note. Use Buffer
-	/// </summary>
 	public abstract class PipeDataRow : DataRow
 	{
 		protected object[] _data;

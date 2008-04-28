@@ -28,6 +28,7 @@ namespace Pipeline1
 	{
 		#region const
 		public const int DYNAMIC_PORT_COUNT = -1;
+		public const int ERROR_PORT = -1;
 		#endregion
 		
 		#region fields
@@ -63,7 +64,7 @@ namespace Pipeline1
 			get {return _outputs.Count;}
 		}
 		
-		protected bool DoRun
+		protected bool Active
 		{
 			get {return Status == Status.Running;}
 		}
