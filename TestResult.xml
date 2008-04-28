@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="PipeStreamTests" total="3" failures="0" not-run="0" date="2008-04-25" time="17:20:25">
+  <environment nunit-version="2.4.2.0" clr-version="2.0.50727.1433" os-version="Microsoft Windows NT 5.1.2600 Service Pack 2" platform="Win32NT" cwd="C:\data\C#\Pipeline" machine-name="KOALA" user="User" user-domain="KOALA" />
+  <culture-info current-culture="et-EE" current-uiculture="en-US" />
+  <test-suite name="PipeStreamTests" success="True" time="2.109" asserts="0">
+    <results>
+      <test-case name="Utility.Tests.PipeStreamTests.ReadWriteSingleThreadTests" executed="True" success="True" time="0.016" asserts="1" />
+      <test-case name="Utility.Tests.PipeStreamTests.ReadWriteMultiThreadTests" executed="True" success="True" time="0.000" asserts="1" />
+      <test-case name="Utility.Tests.PipeStreamTests.ReadWriteWithSeveralStreamsMultiThreadTests" executed="True" success="True" time="2.078" asserts="1" />
+    </results>
+  </test-suite>
+</test-results>
