@@ -34,7 +34,6 @@ namespace Pipeline1
 		private Thread _processorThread;
 		private Hashtable _inputs = new Hashtable();
 		private Hashtable _outputs = new Hashtable();				
-		private Status _status = Status.Ready;
 
 		private int _INPUT_PORTS_DEFINED = 0;
 		private int _OUTPUT_PORTS_DEFINED = 0;
