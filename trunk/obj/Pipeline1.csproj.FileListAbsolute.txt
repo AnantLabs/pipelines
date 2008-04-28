@@ -1,0 +1,5 @@
+C:\data\C#\Pipeline\obj\Debug\ResolveAssemblyReference.cache
+C:\data\C#\Pipeline\bin\Debug\Pipeline1.exe
+C:\data\C#\Pipeline\bin\Debug\Pipeline1.pdb
+C:\data\C#\Pipeline\obj\Debug\Pipeline1.exe
+C:\data\C#\Pipeline\obj\Debug\Pipeline1.pdb
