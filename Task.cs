@@ -82,7 +82,8 @@ namespace Pipeline1
 			
 			foreach (Component component in _components.Values)
 			{
-				if (component.InputCount == 0 && component.Precedence.Count == 0)//no inputs and no precedences
+				//no inputs and no precedences
+				if (component.InputCount == 0 && component.Precedence.Count == 0)
 				{
 					component.Precedence.Add(this, PrecedenceEvent.Start);
 					rootNodeCount++;

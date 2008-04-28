@@ -14,32 +14,34 @@ namespace Pipeline1
 			
 	public class Producer : Component
 	{
-		private string _filePath = "FilePath";
+		private string _connName = "Connection";
 				
 		public Producer(string id)
 		{
 			Id = id;
 			OUTPUT_PORTS_DEFINED = 1;
-			Parameters.Add(_filePath);
+			Parameters.Add(_connName);
 		}
 		
 		protected override void Run()
 		{
 			Console.WriteLine("{0} started",Id);
-			
 			PipeWriter writer = GetOutput().Writer;
-			string path = Parameters.AsString(_filePath);
-			Console.WriteLine("Value={0}",path);
-			StreamReader file = new StreamReader(path);
+			string connName = Parameters.AsString(_connName);
+			FileConnection conn = (ConnectionManager.Connection(connName).Acquire() as FileConnection);
+				
+			Console.WriteLine("Value={0}",conn.Path);
+			StreamReader file = new StreamReader(conn.Path);
 			int count = 0;
 			
-			while (!file.EndOfStream && DoRun)
+			while (!file.EndOfStream && Active)
 			{
 				writer[0] = file.ReadLine();
 				writer.Flush();
 				count++;
 			}
-			file.Close();			
+			file.Close();		
+			conn.Release();
 			//writer.Close();
 			Console.WriteLine("[{1}] {2} : Count = {0}",count,DateTime.Now,Id);
 		}
@@ -62,9 +64,9 @@ namespace Pipeline1
 			PipeReader reader = GetInput().Reader;
 			PipeWriter writer = GetOutput().Writer;
 			
-			while (DoRun && reader.Next())
+			while (Active && reader.Next())
 			{
-				string[] items = ((string)reader[0]).Split(",".ToCharArray());
+				string[] items = ((string)reader[0]).Split("\t".ToCharArray());
 		
 				writer[0] = items[0];
 				writer[1] = items[1];
@@ -98,7 +100,7 @@ namespace Pipeline1
 			
 			int count = 0;
 
-			while (DoRun && reader.Next())
+			while (Active && reader.Next())
 			{
 				string line = string.Empty;
 				for (int i=0;i<reader.Columns.Count;i++)
@@ -120,17 +122,21 @@ namespace Pipeline1
 		{
 						
 	        Console.WriteLine("Configuring worker threads...");
+			
+	        ConnectionManager.Add("File.Input", new FileConnection(@"c:\data\c#\pipelines\test\data\f1.csv"));
+	        ConnectionManager.Add("File.Output", new FileConnection(@"c:\data\c#\pipelines\test\data\f1_out.csv"));
 	        
 	        Task task = new Task();
-	        task.Parameters.Add("Path",@"c:\etl_beta\data");
-	        task.Parameters.Add("InputFileName",@"skype_prefix.txt");
-	        task.Parameters.Add("OutputFileName",@"skype_prefix_converted.txt");
+	        task.Parameters.Add("Path",@"c:\data\c#\pipelines\test\data");
+	        task.Parameters.Add("InputFileName",@"f1.csv");
+	        task.Parameters.Add("OutputFileName",@"f1_out.csv");
 	        task.Parameters.Add("InputPath").Expression = @"$(Path)\$(InputFileName)";
 	        task.Parameters.Add("OutputPath");
 	        task.Parameters.SetExpression("OutputPath", @"$(Path)\$(OutputFileName)");
+	        task.Parameters.Add("InputConnectionName","File.Input");
 	        
 	        Component comp = new Producer("p1");
-	        comp.Parameters.SetVariable("FilePath","InputPath");
+	        comp.Parameters.SetVariable("Connection","InputConnectionName");
 	        task.AddComponent(comp);
 	        
 	        comp = new Filter("f1");

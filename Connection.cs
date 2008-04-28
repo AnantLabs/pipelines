@@ -17,21 +17,8 @@ namespace Pipeline1
 	public class ConnectionIdMustBeUnique : Exception {}
 	public class CannotFindConnection : Exception {}
 	#endregion
-	
-	/// <summary>
-	/// Description of Connection.
-	/// ConnectionManager, Singleton, contails list of connections
-	/// 
-	/// AcuireConnection(connectionId,componentId)
-	/// if available > 0 and queue is empty, available--, return
-	/// else add to queue & block until some thread calls release. then check if first in queue. if 
-	/// true, dequeue, available--
-	/// ReleaseConnection(connectionId) 
-	/// available++, monitor.pulse
-	/// 
-	/// </summary>
-	
-	
+		
+	#region Connection
 	/// <summary>
 	/// Base class for connections
 	/// </summary>
@@ -83,12 +70,60 @@ namespace Pipeline1
 			}
 		}
 	}
+	#endregion
 	
-	public class ConnectionManager
+	#region ConnectionManager
+//	public class ConnectionManager
+//	{
+//		private static volatile ConnectionManager _instance;
+//		private static object _syncRoot = new Object();
+//		public Dictionary<string, Connection> _connections = new Dictionary<string, Connection>();
+//		
+//		private ConnectionManager() {}
+//		
+//		public static ConnectionManager Instance
+//		{
+//		  get 
+//		  {
+//		     if (_instance == null) 
+//		     {
+//		        lock (_syncRoot) 
+//		        {
+//		           if (_instance == null) 
+//		              _instance = new ConnectionManager();
+//		        }
+//		     }
+//		
+//		     return _instance;
+//		  }
+//		}
+//		
+//		public void Add(string id, Connection connection)
+//		{
+//			lock(_syncRoot)
+//			{
+//				if (_connections.ContainsKey(id))
+//					throw new ConnectionIdMustBeUnique();				
+//				_connections.Add(id,connection);
+//			}
+//		}
+//		
+//		public Connection Connection(string id)
+//		{
+//			lock(_syncRoot)
+//			{
+//				if (!_connections.ContainsKey(id))
+//					throw new CannotFindConnection();
+//				return _connections[id];
+//			}
+//		}
+//	}
+	
+	public sealed class ConnectionManager
 	{
 		private static volatile ConnectionManager _instance;
 		private static object _syncRoot = new Object();
-		public Dictionary<string, Connection> _connections = new Dictionary<string, Connection>();
+		private static Dictionary<string, Connection> _connections = new Dictionary<string, Connection>();
 		
 		private ConnectionManager() {}
 		
@@ -109,7 +144,7 @@ namespace Pipeline1
 		  }
 		}
 		
-		public void Add(string id, Connection connection)
+		public static void Add(string id, Connection connection)
 		{
 			lock(_syncRoot)
 			{
@@ -119,7 +154,7 @@ namespace Pipeline1
 			}
 		}
 		
-		public Connection Connection(string id)
+		public static Connection Connection(string id)
 		{
 			lock(_syncRoot)
 			{
@@ -129,4 +164,19 @@ namespace Pipeline1
 			}
 		}
 	}
+	
+	#endregion
+	
+	#region FileConnection
+	public class FileConnection : Connection
+	{
+		public readonly string Path;
+		
+		public FileConnection(string path)
+		{
+			Path = path;
+			Available = 1;
+		}
+	}
+	#endregion
 }

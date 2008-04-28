@@ -1,0 +1,4 @@
+* interfaces for Pipe Reader and Writer
+* replace GetInput and GetOutput with interface accessor and hide real pipes
+* add testdata and testcode
+* add transformer component
