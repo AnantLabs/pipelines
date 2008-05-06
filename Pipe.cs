@@ -73,7 +73,7 @@ namespace Pipeline1
 			return _data[index];
 		}
 		
-		public void CopyData(PipeDataRow source)
+		public override void CopyData(IDataRow source)
 		{
 			for (int i=0;i<Columns.Count;i++)
 			{
@@ -81,16 +81,26 @@ namespace Pipeline1
 			}
 		}
 		
-		public void CopyDataRef(PipeDataRow source)
+		public override void CopyData(IDataRow source, bool ByRef)
 		{
-			_data = source._data;
+			if (ByRef)
+				_data = (source as PipeDataRow)._data;
+			else
+				CopyData(source);
 		}
 		
 	}
 	#endregion
 	
+	#region IReader
+	public interface IReader : IDataRow
+	{
+		bool Next();	
+	}
+	#endregion
+	
 	#region PipeReader
-	public class PipeReader : PipeDataRow
+	public class PipeReader : PipeDataRow,IReader
 	{
 		public PipeReader(PipeColumns columns) : base(columns) {}
 		
@@ -101,8 +111,15 @@ namespace Pipeline1
 	}
 	#endregion
 	
+	#region IWriter
+	public interface IWriter : IDataRow
+	{
+		void Flush();
+	}
+	#endregion
+	
 	#region PipeWriter
-	public class PipeWriter : PipeDataRow
+	public class PipeWriter : PipeDataRow, IWriter
 	{
 		public PipeWriter(PipeColumns columns) : base(columns) {}
 		
@@ -110,12 +127,7 @@ namespace Pipeline1
 		{
 			this.Pipe.Write(this._data);
 			InitData();
-		}
-		
-		public void Close()
-		{
-			this.Pipe.Close();			
-		}
+		}		
 	}
 	#endregion
 	
@@ -133,8 +145,8 @@ namespace Pipeline1
 		private PipeColumns _columns;
 		private Component _producer = null;
 		private Component _consumer = null;
-		private PipeReader _reader = null;
-		private PipeWriter _writer = null;
+		private IReader _reader = null;
+		private IWriter _writer = null;
 		private System.Int64 _count = 0;
 		#endregion
 		
@@ -180,7 +192,7 @@ namespace Pipeline1
 				}	
 		}
 		
-		public PipeReader Reader
+		public IReader Reader
 		{
 			get { if (_reader == null)
 					_reader = new PipeReader(_columns);
@@ -188,7 +200,7 @@ namespace Pipeline1
 				}
 		}
 		
-		public PipeWriter Writer
+		public IWriter Writer
 		{
 			get { if (_writer == null)
 					_writer = new PipeWriter(_columns);

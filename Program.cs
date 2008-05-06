@@ -26,7 +26,7 @@ namespace Pipeline1
 		protected override void Run()
 		{
 			Console.WriteLine("{0} started",Id);
-			PipeWriter writer = GetOutput().Writer;
+			IWriter writer = GetOutput().Writer;
 			string connName = Parameters.AsString(_connName);
 			FileConnection conn = (ConnectionManager.Connection(connName).Acquire() as FileConnection);
 				
@@ -61,8 +61,8 @@ namespace Pipeline1
 			Console.WriteLine("{0} started",Id);
 			
 			int count = 0;
-			PipeReader reader = GetInput().Reader;
-			PipeWriter writer = GetOutput().Writer;
+			IReader reader = GetInput().Reader;
+			IWriter writer = GetOutput().Writer;
 			
 			while (Active && reader.Next())
 			{
@@ -95,7 +95,7 @@ namespace Pipeline1
 		{
 			Console.WriteLine("{0} started",Id);
 			
-			PipeReader reader = GetInput().Reader;
+			IReader reader = GetInput().Reader;
 			StreamWriter file = new StreamWriter(Parameters.AsString(_filePath));
 			
 			int count = 0;
