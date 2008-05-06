@@ -55,7 +55,7 @@ namespace Pipeline1
 			
 	}
 	#endregion
-	
+		
 	#region DataColumn
 	public class DataColumn
 	{
@@ -188,7 +188,7 @@ namespace Pipeline1
 	#endregion
 	
 	#region DataColumnCollection
-	public class DataColumnCollection		
+	public class DataColumnCollection
 	{
 		#region fields
 		private List<DataColumn> _columns = new List<DataColumn>();
@@ -204,7 +204,6 @@ namespace Pipeline1
 		{
 			get {return Count == 0;}
 		}
-		#endregion
 		
 		public DataColumn this[int index]
 		{
@@ -214,6 +213,9 @@ namespace Pipeline1
 		{
 			get {return _columns[_columnNames[index]];}
 		}
+		#endregion
+		
+		#region methods
 		public void Add(DataColumn column)
 		{
 			if (column.Name == string.Empty)
@@ -299,13 +301,28 @@ namespace Pipeline1
 				this.Add(column.Clone());
 			}
 		}
-		
+		#endregion
 		
 	}
 	#endregion
 	
+	#region IDataRow
+	public interface IDataRow
+	{
+		DataColumnCollection Columns {get;}
+		object this[int index]{get;set;}
+		object this[string name]{get;set;}
+		string AsString(int index);
+		string AsString(string name);
+		bool IsNull(int index);
+		bool IsNull(string name);			
+		void CopyData(IDataRow source);
+		void CopyData(IDataRow source, bool ByRef);
+	}
+	#endregion
+	
 	#region DataRow	
-	public abstract class DataRow
+	public abstract class DataRow : IDataRow
 	{
 		private DataColumnCollection _columns;
 		
@@ -356,6 +373,9 @@ namespace Pipeline1
 		{
 			return IsNull(_columns.IndexOf(name));
 		}
+		
+		public abstract void CopyData(IDataRow source);
+		public abstract void CopyData(IDataRow source, bool ByRef);
 			
 		protected abstract void InitData();
 		protected abstract void SetValue(int index, object value);

@@ -23,6 +23,7 @@ namespace Pipeline1
 	
 	/// <summary>
 	/// Description of Component.
+	/// TODO:PortCollection for easier and safer port connection management
 	/// </summary>
 	public abstract class Component : Element
 	{
